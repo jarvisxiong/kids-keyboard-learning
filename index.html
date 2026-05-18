@@ -3,44 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>小朋友的键盘乐园</title>
-  <!-- 儿童友好字体 -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <title>小朋友的键盘乐园 🎹</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ═══════════════════════════════════════════════════════════════
-       Claymorphism 儿童友好主题
-       ═══════════════════════════════════════════════════════════════ */
-
-    /* 颜色系统：学习蓝 + 游戏黄 + 活力粉 */
-    :root {
-      --color-primary: #2563EB;
-      --color-secondary: #F59E0B;
-      --color-accent: #EC4899;
-      --color-success: #22C55E;
-      --color-background: #EFF6FF;
-      --color-background-warm: #FFF7ED;
-      --color-background-pink: #FFF1F2;
-      --color-foreground: #0F172A;
-      --color-muted: #64748B;
-      --color-card: #FFFFFF;
-      --color-border: #E4ECFC;
-      --color-text-light: #334155;
-    }
-
     body {
-      /* 明亮渐变背景 - 活泼友好 */
-      background: linear-gradient(135deg,
-        var(--color-background) 0%,
-        var(--color-background-warm) 50%,
-        var(--color-background-pink) 100%);
-      font-family: 'Comic Neue', 'PingFang SC', 'Microsoft YaHei', cursive, sans-serif;
+      background: #0d0d2b;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
       overflow: hidden;
       min-height: 100vh;
-      color: var(--color-foreground);
+      color: #fff;
       user-select: none;
     }
 
@@ -53,15 +25,7 @@
       display: grid;
       grid-template-columns: 1fr 190px;
       grid-template-rows: auto 1fr auto;
-      gap: 16px;
-      /* Claymorphism 白色卡片容器 */
-      background: var(--color-card);
-      border-radius: 32px;
-      padding: 20px;
-      box-shadow:
-        12px 12px 24px rgba(0, 0, 0, 0.08),
-        -12px -12px 24px rgba(255, 255, 255, 0.9),
-        0 0 0 4px rgba(37, 99, 235, 0.1);
+      gap: 14px;
     }
 
     #top-bar {
@@ -70,70 +34,47 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      padding-bottom: 8px;
     }
 
     #top-bar h1 {
-      /* 儿童友好字体 Baloo 2 */
-      font-family: 'Baloo 2', cursive;
-      font-size: clamp(32px, 4vw, 52px);
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      color: var(--color-primary);
-      /* 软萌文字阴影 */
-      text-shadow: 2px 2px 0 var(--color-secondary);
+      font-size: clamp(28px, 4vw, 48px);
+      line-height: 1;
+      letter-spacing: 0;
     }
 
     #friendly-prompt {
-      margin-top: 6px;
-      color: var(--color-muted);
-      font-size: clamp(15px, 2vw, 20px);
-      font-weight: 400;
+      margin-top: 8px;
+      color: rgba(255,255,255,0.68);
+      font-size: clamp(14px, 2vw, 20px);
     }
 
     #reward-panel {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
       justify-content: flex-end;
     }
 
     .reward-pill {
-      min-width: 96px;
-      /* Claymorphism 奖励胶囊 */
-      background: linear-gradient(145deg, #ffffff, #f8fafc);
-      border: 3px solid rgba(37, 99, 235, 0.2);
-      border-radius: 20px;
-      padding: 12px 16px;
+      min-width: 92px;
+      border: 2px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.1);
+      border-radius: 18px;
+      padding: 10px 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       font-size: 18px;
-      font-weight: 700;
-      color: var(--color-foreground);
-      /* 内外阴影 */
-      box-shadow:
-        6px 6px 12px rgba(0, 0, 0, 0.06),
-        -6px -6px 12px rgba(255, 255, 255, 0.7);
-    }
-
-    .reward-pill strong {
-      color: var(--color-secondary);
-      font-size: 20px;
     }
 
     #play-area {
       position: relative;
       overflow: hidden;
-      /* Claymorphism 主舞台 */
-      background: linear-gradient(145deg, #f0f9ff, #ffffff);
-      border: 4px solid rgba(37, 99, 235, 0.15);
-      border-radius: 28px;
-      box-shadow:
-        10px 10px 20px rgba(0, 0, 0, 0.06),
-        -10px -10px 20px rgba(255, 255, 255, 0.8),
-        inset 0 0 30px rgba(37, 99, 235, 0.03);
+      border: 2px solid rgba(255,255,255,0.16);
+      border-radius: 26px;
+      background: rgba(255,255,255,0.06);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.25);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -143,100 +84,50 @@
 
     #control-dock {
       display: grid;
-      gap: 12px;
+      gap: 10px;
       align-content: stretch;
     }
 
-    /* ═══════════════════════════════════════════════════════════════
-       Claymorphism 按钮
-       ═══════════════════════════════════════════════════════════════ */
-
     .play-btn, .soft-btn {
-      font-family: 'Baloo 2', cursive;
+      border: 2px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.09);
+      color: #fff;
+      border-radius: 18px;
       cursor: pointer;
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
-                  box-shadow 0.2s ease,
-                  background 0.2s ease;
+      transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
     }
 
     .play-btn {
-      min-height: 88px;
-      /* 触摸目标 ≥44px */
-      min-width: 44px;
+      min-height: 86px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--color-foreground);
-      /* Claymorphism 样式 */
-      background: linear-gradient(145deg, #ffffff, #f0f4ff);
-      border: 3px solid rgba(37, 99, 235, 0.2);
-      border-radius: 22px;
-      box-shadow:
-        8px 8px 16px rgba(0, 0, 0, 0.08),
-        -8px -8px 16px rgba(255, 255, 255, 0.8);
+      gap: 8px;
+      font-size: 18px;
+      font-family: inherit;
+      font-weight: 800;
     }
 
-    .play-btn .btn-icon {
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .play-btn span {
+      font-size: 30px;
     }
 
-    .play-btn .btn-icon svg {
-      width: 28px;
-      height: 28px;
-    }
-
-    .play-btn:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow:
-        12px 12px 24px rgba(0, 0, 0, 0.1),
-        -12px -12px 24px rgba(255, 255, 255, 0.9);
-    }
-
-    .play-btn:active {
-      transform: scale(0.96);
-      box-shadow:
-        4px 4px 8px rgba(0, 0, 0, 0.12),
-        -4px -4px 8px rgba(255, 255, 255, 1);
+    .play-btn:hover, .soft-btn:hover {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.15);
     }
 
     .play-btn.active {
-      /* 活跃状态 - 黄色高亮 */
-      background: linear-gradient(145deg, #fffbeb, #fef3c7);
-      border-color: var(--color-secondary);
-      box-shadow:
-        8px 8px 16px rgba(245, 158, 11, 0.15),
-        -8px -8px 16px rgba(255, 255, 255, 0.9),
-        inset 0 0 20px rgba(245, 158, 11, 0.1);
-    }
-
-    .play-btn.active .btn-icon svg {
-      color: var(--color-secondary);
+      border-color: #ffd93d;
+      background: rgba(255,217,61,0.18);
     }
 
     .soft-btn {
-      padding: 12px 20px;
-      font-size: clamp(16px, 2vw, 18px);
-      font-weight: 700;
-      color: var(--color-foreground);
-      background: linear-gradient(145deg, #ffffff, #f8fafc);
-      border: 3px solid rgba(236, 72, 153, 0.2);
-      border-radius: 18px;
-      box-shadow:
-        6px 6px 12px rgba(0, 0, 0, 0.06),
-        -6px -6px 12px rgba(255, 255, 255, 0.7);
-    }
-
-    .soft-btn:hover {
-      transform: translateY(-2px);
-      border-color: var(--color-accent);
+      padding: 10px 18px;
+      font-size: clamp(15px, 2vw, 18px);
+      font-family: inherit;
+      font-weight: 800;
     }
 
     #recent-panel {
@@ -246,50 +137,36 @@
       align-items: center;
       gap: 12px;
       overflow: hidden;
-      padding: 8px 0;
     }
 
     .recent-title {
-      color: var(--color-muted);
+      color: rgba(255,255,255,0.55);
       white-space: nowrap;
-      font-weight: 600;
     }
 
     #recent-list {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       overflow: hidden;
     }
 
     .recent-chip {
-      border-radius: 16px;
-      padding: 8px 14px;
-      /* Claymorphism 小卡片 */
-      background: linear-gradient(145deg, #ffffff, #f0f9ff);
-      border: 2px solid rgba(37, 99, 235, 0.15);
+      border-radius: 14px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.14);
       white-space: nowrap;
       font-weight: 700;
-      color: var(--color-text-light);
-      box-shadow:
-        4px 4px 8px rgba(0, 0, 0, 0.04),
-        -4px -4px 8px rgba(255, 255, 255, 0.6);
     }
 
     /* ── Hint ── */
     #hint {
-      color: var(--color-muted);
-      font-size: 1.3rem;
-      font-family: 'Baloo 2', cursive;
-      letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.4);
+      font-size: 1.4rem;
+      letter-spacing: 0.1em;
       text-align: center;
       position: absolute;
-      padding: 24px;
-      line-height: 1.6;
-    }
-
-    #hint small {
-      color: var(--color-muted);
-      opacity: 0.7;
+      padding: 18px;
     }
 
     /* ── Free / result display ── */
@@ -298,113 +175,98 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       text-align: center;
-      animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
       max-height: 100%;
-      padding: 20px;
+      padding: 18px;
     }
     @keyframes popIn {
-      from { transform: scale(0.5); opacity: 0; }
+      from { transform: scale(0.4); opacity: 0; }
       to   { transform: scale(1);   opacity: 1; }
     }
 
     #key-letter {
-      font-family: 'Baloo 2', cursive;
-      font-size: clamp(72px, 14vw, 150px);
-      font-weight: 800;
+      font-size: clamp(64px, 14vw, 140px);
+      font-weight: 900;
       line-height: 1;
-      /* 软萌文字效果 */
-      text-shadow:
-        0 0 40px currentColor,
-        4px 4px 0 rgba(0, 0, 0, 0.1);
+      text-shadow: 0 0 60px currentColor, 0 0 20px currentColor;
     }
-
     #emoji-box {
-      font-size: clamp(48px, 8vw, 96px);
+      font-size: clamp(44px, 8vw, 88px);
       line-height: 1;
-      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+      filter: drop-shadow(0 0 20px rgba(255,255,255,0.5));
     }
-
     @keyframes speakPulse {
       0%,100% { transform: scale(1); }
-      50%      { transform: scale(1.15); }
+      50%      { transform: scale(1.18); }
     }
-    .speaking { animation: speakPulse 0.5s ease-in-out infinite; }
+    .speaking { animation: speakPulse 0.45s ease-in-out infinite; }
 
     /* number: big digit + 汉字 side by side */
     #num-row {
       display: flex;
       align-items: center;
-      gap: 24px;
+      gap: 20px;
       flex-wrap: wrap;
       justify-content: center;
     }
     #num-arabic {
-      font-family: 'Baloo 2', cursive;
-      font-size: clamp(80px, 15vw, 160px);
-      font-weight: 800;
+      font-size: clamp(76px, 15vw, 150px);
+      font-weight: 900;
       line-height: 1;
-      text-shadow:
-        0 0 40px currentColor,
-        4px 4px 0 rgba(0, 0, 0, 0.1);
+      text-shadow: 0 0 60px currentColor, 0 0 20px currentColor;
     }
     #num-chinese {
-      font-family: 'Baloo 2', cursive;
-      font-size: clamp(72px, 13vw, 144px);
-      font-weight: 800;
+      font-size: clamp(70px, 13vw, 136px);
+      font-weight: 900;
       line-height: 1;
-      color: var(--color-foreground);
-      text-shadow:
-        0 0 30px currentColor,
-        4px 4px 0 rgba(0, 0, 0, 0.1);
+      color: #fff;
+      text-shadow: 0 0 40px currentColor;
     }
 
     /* emoji counting row */
     #count-row {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
       justify-content: center;
       max-width: 85vw;
-      min-height: clamp(40px, 7vw, 80px);
-      font-size: clamp(32px, 6vw, 68px);
+      min-height: clamp(36px, 7vw, 72px);
+      font-size: clamp(30px, 6vw, 64px);
     }
     .count-item {
-      animation: dotPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: dotPop 0.35s cubic-bezier(0.34,1.56,0.64,1);
       display: inline-block;
     }
     @keyframes dotPop {
-      from { transform: scale(0) rotate(-15deg); opacity: 0; }
-      to   { transform: scale(1) rotate(0deg); opacity: 1; }
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
     }
 
     /* SVG digit stroke */
     #svg-digit-wrap {
-      width: clamp(64px, 10vw, 108px);
-      height: clamp(88px, 14vw, 150px);
+      width: clamp(60px,10vw,100px);
+      height: clamp(84px,14vw,140px);
+      opacity: 0.85;
     }
     #svg-digit-wrap svg { width: 100%; height: 100%; }
 
     #chinese-word {
-      font-family: 'Baloo 2', cursive;
-      font-size: clamp(32px, 5.8vw, 64px);
+      font-size: clamp(30px, 5.8vw, 60px);
       font-weight: 700;
-      color: var(--color-foreground);
-      text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.08);
+      color: #fff;
     }
     #pinyin {
-      font-size: clamp(18px, 2.8vw, 32px);
-      color: var(--color-muted);
-      letter-spacing: 0.12em;
-      font-weight: 600;
+      font-size: clamp(17px, 2.8vw, 30px);
+      color: rgba(255,255,255,0.75);
+      letter-spacing: 0.15em;
     }
     #english-word {
-      font-size: clamp(14px, 2vw, 22px);
-      color: var(--color-muted);
-      letter-spacing: 0.08em;
+      font-size: clamp(13px, 2vw, 20px);
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      opacity: 0.8;
     }
 
     /* ── Pinyin mode ── */
@@ -412,51 +274,43 @@
       display: none;
       flex-direction: column;
       align-items: center;
-      gap: 18px;
+      gap: 16px;
       text-align: center;
     }
     #pinyin-hint {
-      color: var(--color-muted);
-      font-size: 1.2rem;
-      font-family: 'Baloo 2', cursive;
-      line-height: 1.5;
+      color: rgba(255,255,255,0.35);
+      font-size: 1.1rem;
     }
     #pinyin-buf-display {
-      font-family: 'Baloo 2', cursive;
-      font-size: clamp(44px, 9vw, 100px);
+      font-size: clamp(40px,9vw,90px);
       font-weight: 700;
-      color: var(--color-secondary);
-      letter-spacing: 0.1em;
+      color: #ffd93d;
+      letter-spacing: 0.12em;
       min-height: 1.2em;
-      text-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
+      text-shadow: 0 0 30px #ffd93d88;
     }
     #pinyin-result {
       display: none;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
-      animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      gap: 8px;
+      animation: popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
     }
     #pinyin-zi {
-      font-family: 'Baloo 2', cursive;
-      font-size: clamp(88px, 18vw, 200px);
-      font-weight: 800;
-      color: var(--color-foreground);
-      text-shadow:
-        0 0 50px currentColor,
-        4px 4px 0 rgba(0, 0, 0, 0.1);
+      font-size: clamp(80px,18vw,180px);
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 0 60px #fff4, 0 0 20px #fff4;
     }
-    #pinyin-emoji { font-size: clamp(54px, 10vw, 108px); }
+    #pinyin-emoji { font-size: clamp(50px,10vw,100px); }
     #pinyin-py {
-      font-size: clamp(20px, 3.5vw, 40px);
-      color: var(--color-muted);
-      letter-spacing: 0.12em;
-      font-weight: 600;
+      font-size: clamp(18px,3.5vw,36px);
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.15em;
     }
     #pinyin-tip {
-      font-size: clamp(14px, 2vw, 22px);
-      color: var(--color-muted);
-      opacity: 0.7;
+      font-size: clamp(13px,2vw,20px);
+      color: rgba(255,255,255,0.3);
     }
 
     /* ── Quiz mode ── */
@@ -464,40 +318,36 @@
       display: none;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
+      gap: 18px;
       text-align: center;
     }
     #quiz-prompt {
-      color: var(--color-muted);
-      font-size: clamp(18px, 3vw, 30px);
-      font-family: 'Baloo 2', cursive;
+      color: rgba(255,255,255,0.5);
+      font-size: clamp(16px,3vw,28px);
     }
     #quiz-emoji {
-      font-size: clamp(88px, 18vw, 200px);
+      font-size: clamp(80px,18vw,180px);
       line-height: 1;
-      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.1));
+      filter: drop-shadow(0 0 30px rgba(255,255,255,0.4));
     }
     #quiz-word {
-      font-family: 'Baloo 2', cursive;
-      font-size: clamp(28px, 5vw, 56px);
+      font-size: clamp(26px,5vw,52px);
       font-weight: 700;
-      color: var(--color-foreground);
-      text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.08);
+      color: #fff;
     }
     #quiz-feedback {
-      font-family: 'Baloo 2', cursive;
-      font-size: clamp(22px, 4vw, 44px);
+      font-size: clamp(20px,4vw,40px);
       min-height: 1.4em;
       font-weight: 700;
     }
     @keyframes shake {
-      0%,100% { transform: translateX(0) rotate(0deg); }
-      20%      { transform: translateX(-10px) rotate(-3deg); }
-      40%      { transform: translateX(10px) rotate(3deg); }
-      60%      { transform: translateX(-6px) rotate(-2deg); }
-      80%      { transform: translateX(6px) rotate(2deg); }
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-12px); }
+      40%      { transform: translateX(12px); }
+      60%      { transform: translateX(-8px); }
+      80%      { transform: translateX(8px); }
     }
-    .shake { animation: shake 0.5s ease; }
+    .shake { animation: shake 0.4s ease; }
 
     /* particles */
     #particles {
@@ -515,79 +365,54 @@
     }
     #keyboard-btn {
       position: fixed;
-      right: 20px;
-      bottom: 120px;
-      /* Claymorphism 键盘按钮 */
-      background: linear-gradient(145deg, #ffffff, #f0f9ff);
-      border: 3px solid rgba(37, 99, 235, 0.2);
-      border-radius: 20px;
-      width: 68px;
-      height: 60px;
+      right: 16px;
+      bottom: 108px;
+      background: rgba(255,255,255,0.16);
+      border: 2px solid rgba(255,255,255,0.24);
+      border-radius: 18px;
+      width: 64px;
+      height: 56px;
+      font-size: 26px;
       cursor: pointer;
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 20;
-      box-shadow:
-        8px 8px 16px rgba(0, 0, 0, 0.08),
-        -8px -8px 16px rgba(255, 255, 255, 0.8);
-      transition: transform 0.2s ease;
-    }
-    #keyboard-btn:hover {
-      transform: scale(1.05);
-    }
-    #keyboard-btn svg {
-      width: 28px;
-      height: 28px;
-      color: var(--color-primary);
+      color: #fff;
     }
 
     @media (max-width: 760px) {
       body { overflow: hidden; }
       #app-shell {
-        width: calc(100vw - 16px);
-        height: calc(100vh - 16px);
-        margin: 8px auto;
+        width: calc(100vw - 20px);
+        height: calc(100vh - 20px);
+        margin: 10px auto;
         grid-template-columns: 1fr;
         grid-template-rows: auto 1fr auto auto;
-        padding: 16px;
-        border-radius: 24px;
       }
-      #top-bar { align-items: flex-start; gap: 12px; }
-      #top-bar h1 { font-size: 28px; }
-      #friendly-prompt { font-size: 14px; }
-      #reward-panel { gap: 8px; }
+      #top-bar { align-items: flex-start; }
+      #reward-panel { gap: 6px; }
       .reward-pill {
-        min-width: 72px;
-        padding: 8px 12px;
-        font-size: 15px;
-        border-radius: 16px;
+        min-width: 70px;
+        padding: 8px 10px;
+        font-size: 14px;
+        border-radius: 14px;
       }
-      .reward-pill strong { font-size: 18px; }
       #control-dock {
         grid-row: 3;
         grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 10px;
+        gap: 6px;
       }
       .play-btn {
-        min-height: 64px;
-        min-width: 44px;
-        border-radius: 16px;
-        font-size: 13px;
+        min-height: 62px;
+        border-radius: 14px;
+        font-size: 12px;
         gap: 4px;
       }
-      .play-btn .btn-icon { width: 24px; height: 24px; }
-      .play-btn .btn-icon svg { width: 22px; height: 22px; }
+      .play-btn span { font-size: 22px; }
       #recent-panel {
         grid-row: 4;
-        min-height: 48px;
-      }
-      .recent-chip { padding: 6px 10px; font-size: 14px; }
-      #keyboard-btn {
-        width: 56px;
-        height: 52px;
-        border-radius: 16px;
-        bottom: 100px;
+        min-height: 44px;
       }
     }
   </style>
@@ -601,13 +426,7 @@
   autocapitalize="none" spellcheck="false" />
 
 <!-- Mobile keyboard trigger button -->
-<button id="keyboard-btn" title="唤起键盘" aria-label="打开键盘">
-  <!-- SVG 键盘图标 -->
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="2" y="4" width="20" height="16" rx="2"/>
-    <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M6 16h12"/>
-  </svg>
-</button>
+<button id="keyboard-btn" title="唤起键盘">⌨️</button>
 
 <main id="app-shell">
   <header id="top-bar">
@@ -616,19 +435,13 @@
       <p id="friendly-prompt">按一个键，发现一个小惊喜</p>
     </div>
     <div id="reward-panel" aria-live="polite">
-      <div class="reward-pill">
-        <!-- SVG 星星图标 -->
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="2">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-        </svg>
-        <strong id="stars-count">0</strong>
-      </div>
+      <div class="reward-pill"><span>⭐</span><strong id="stars-count">0</strong></div>
       <div class="reward-pill"><span>连击</span><strong id="streak-count">0</strong></div>
     </div>
   </header>
 
   <section id="play-area" aria-live="polite">
-    <div id="hint">按键盘，或点这里随机发现<br><small>Press any key or tap for surprise</small></div>
+    <div id="hint">按键盘，或点这里随机发现 ✨<br><small>Press any key or tap for surprise</small></div>
 
     <div id="display">
       <div id="key-letter"></div>
@@ -645,7 +458,7 @@
     </div>
 
     <div id="pinyin-mode">
-      <div id="pinyin-hint">拼一拼<br><small>输入拼音，Backspace 删除</small></div>
+      <div id="pinyin-hint">拼一拼 📖<br><small>输入拼音，Backspace 删除</small></div>
       <div id="pinyin-buf-display">_</div>
       <div id="pinyin-result">
         <div id="pinyin-zi"></div>
@@ -665,61 +478,11 @@
   </section>
 
   <aside id="control-dock" aria-label="游乐场控制台">
-    <!-- 字母按钮 -->
-    <button class="play-btn active" data-action="letters" type="button" aria-label="字母模式">
-      <span class="btn-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 20h16M6 4h12M8 4v16M16 4v16"/>
-          <text x="10" y="14" font-size="8" font-weight="bold" fill="currentColor" stroke="none">A</text>
-        </svg>
-      </span>
-      <strong>字母</strong>
-    </button>
-    <!-- 数字按钮 -->
-    <button class="play-btn" data-action="numbers" type="button" aria-label="数字模式">
-      <span class="btn-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="8"/>
-          <text x="9" y="15" font-size="10" font-weight="bold" fill="currentColor" stroke="none">5</text>
-        </svg>
-      </span>
-      <strong>数字</strong>
-    </button>
-    <!-- 拼音按钮 -->
-    <button class="play-btn" data-action="pinyin" type="button" aria-label="拼音模式">
-      <span class="btn-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-          <text x="8" y="12" font-size="6" font-weight="bold" fill="currentColor" stroke="none">拼</text>
-        </svg>
-      </span>
-      <strong>拼一拼</strong>
-    </button>
-    <!-- 挑战按钮 -->
-    <button class="play-btn" data-action="challenge" type="button" aria-label="挑战模式">
-      <span class="btn-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
-          <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
-          <path d="M4 22h16"/>
-          <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
-          <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
-          <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
-        </svg>
-      </span>
-      <strong>小挑战</strong>
-    </button>
-    <!-- 效果按钮 -->
-    <button class="play-btn" data-action="effect" type="button" aria-label="切换效果">
-      <span class="btn-icon" id="effect-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-        </svg>
-      </span>
-      <strong id="effect-label">爆炸</strong>
-    </button>
+    <button class="play-btn active" data-action="letters" type="button"><span>🔤</span><strong>字母</strong></button>
+    <button class="play-btn" data-action="numbers" type="button"><span>🔢</span><strong>数字</strong></button>
+    <button class="play-btn" data-action="pinyin" type="button"><span>📖</span><strong>拼一拼</strong></button>
+    <button class="play-btn" data-action="challenge" type="button"><span>🎮</span><strong>小挑战</strong></button>
+    <button class="play-btn" data-action="effect" type="button"><span id="effect-icon">💥</span><strong id="effect-label">爆炸</strong></button>
   </aside>
 
   <section id="recent-panel" aria-label="最近发现">
@@ -1113,6 +876,7 @@ const englishEl  = document.getElementById("english-word");
 const starsCountEl  = document.getElementById("stars-count");
 const streakCountEl = document.getElementById("streak-count");
 const recentListEl  = document.getElementById("recent-list");
+const effectIconEl  = document.getElementById("effect-icon");
 const effectLabelEl = document.getElementById("effect-label");
 
 let stars = 0;
@@ -1157,8 +921,7 @@ function setMode(m) {
 
   updateActivityButtons(m === "quiz" ? "challenge" : m === "pinyin" ? "pinyin" : "free");
 
-  // 浅色活泼背景
-  document.body.style.background = "linear-gradient(135deg, #EFF6FF 0%, #FFF7ED 50%, #FFF1F2 100%)";
+  document.body.style.background = "#0d0d2b";
 
   if (m === "free") {
     hint.style.display = "block";
@@ -1176,31 +939,9 @@ function setMode(m) {
 // ═══════════════════════════════════════════════════════════════
 let effectMode = 0;
 const EFFECTS = [
-  {
-    label: "爆炸",
-    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="3"/>
-      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-    </svg>`
-  },
-  {
-    label: "音符",
-    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M9 18V5l12-2v13"/>
-      <circle cx="6" cy="18" r="3"/>
-      <circle cx="18" cy="16" r="3"/>
-    </svg>`
-  },
-  {
-    label: "小提琴",
-    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 3v18"/>
-      <path d="M8 6l8 0"/>
-      <path d="M8 12l8 0"/>
-      <ellipse cx="12" cy="18" rx="4" ry="3"/>
-      <path d="M10 21c0 1 1 2 2 2s2-1 2-2"/>
-    </svg>`
-  },
+  { icon: "💥", label: "爆炸" },
+  { icon: "🎵", label: "音符" },
+  { icon: "🎻", label: "小提琴" },
 ];
 
 function updateActivityButtons(activeAction) {
@@ -1212,9 +953,8 @@ function updateActivityButtons(activeAction) {
 
 function updateEffectButton() {
   const fx = EFFECTS[effectMode];
-  const iconEl = document.getElementById("effect-icon");
-  iconEl.innerHTML = fx.svg;
-  document.getElementById("effect-label").textContent = fx.label;
+  effectIconEl.textContent = fx.icon;
+  effectLabelEl.textContent = fx.label;
 }
 
 function setEffectMode(n){
@@ -1280,10 +1020,9 @@ function showKey(raw) {
   displayEl.style.display = "flex";
   displayEl.style.animation = "none";
   void displayEl.offsetWidth;
-  displayEl.style.animation = "popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)";
+  displayEl.style.animation = "popIn 0.25s cubic-bezier(0.34,1.56,0.64,1)";
 
-  // 浅色渐变背景配合当前颜色
-  document.body.style.background = `linear-gradient(135deg, ${c1}15 0%, ${c2}15 50%, #FFF1F2 100%)`;
+  document.body.style.background = `radial-gradient(ellipse at center, ${c1}22 0%, #0d0d2b 70%)`;
 
   if (isLetter) {
     const data = LETTERS[upper];
@@ -1296,7 +1035,7 @@ function showKey(raw) {
     countRow.innerHTML      = "";
     document.getElementById("svg-digit-wrap").innerHTML = "";
     chineseEl.textContent   = data.zh;
-    chineseEl.style.textShadow = `2px 2px 0 rgba(0,0,0,0.1)`;
+    chineseEl.style.textShadow = `0 0 30px ${c2}`;
     pinyinEl.textContent    = data.py;
     englishEl.textContent   = data.en;
     chineseEl.style.display = "";
@@ -1320,7 +1059,7 @@ function showKey(raw) {
     numArabic.style.color   = c1;
     numChinese.textContent  = data.zh;
     numChinese.style.color  = c2;
-    numChinese.style.textShadow = `2px 2px 0 rgba(0,0,0,0.1)`;
+    numChinese.style.textShadow = `0 0 40px ${c2}`;
     showDigitSVG(upper, c1);
 
     countRow.innerHTML      = "";
@@ -1352,8 +1091,7 @@ function resetPinyin() {
   pinyinBuf = "";
   pinyinBufEl.textContent = "_";
   pinyinResultEl.style.display = "none";
-  // 浅色活泼背景
-  document.body.style.background = "linear-gradient(135deg, #EFF6FF 0%, #FFF7ED 50%, #FFF1F2 100%)";
+  document.body.style.background = "#0d0d2b";
 }
 
 async function handlePinyinKey(key) {
@@ -1382,21 +1120,20 @@ async function handlePinyinKey(key) {
   const match = PINYIN_MAP[pinyinBuf];
   if (match) {
     const [c1, c2] = nextPalette();
-    // 浅色渐变背景配合当前颜色
-    document.body.style.background = `linear-gradient(135deg, ${c1}15 0%, ${c2}15 50%, #FFF1F2 100%)`;
+    document.body.style.background = `radial-gradient(ellipse at center, ${c1}22 0%, #0d0d2b 70%)`;
     triggerEffect(c1,c2,523);
     addReward(2);
     addDiscovery(`${match.zi} ${match.py}`, match.emoji);
 
     pinyinZiEl.textContent   = match.zi;
     pinyinZiEl.style.color   = c1;
-    pinyinZiEl.style.textShadow = `2px 2px 0 rgba(0,0,0,0.1)`;
+    pinyinZiEl.style.textShadow = `0 0 60px ${c1}`;
     pinyinEmojiEl.textContent = match.emoji;
     pinyinPyEl.textContent   = match.py;
     pinyinResultEl.style.display = "flex";
     pinyinResultEl.style.animation = "none";
     void pinyinResultEl.offsetWidth;
-    pinyinResultEl.style.animation = "popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)";
+    pinyinResultEl.style.animation = "popIn 0.25s cubic-bezier(0.34,1.56,0.64,1)";
     cancelSpeech();
     const gen = speechGen;
     await sayOne(match.zi, "zh-CN", .82, 1.1);
@@ -1434,8 +1171,7 @@ function nextQuiz() {
   quizWordEl.textContent  = data.zh;
   quizWordEl.style.color  = c1;
 
-  // 浅色渐变背景
-  document.body.style.background = `linear-gradient(135deg, ${c1}15 0%, #FFF7ED 50%, #FFF1F2 100%)`;
+  document.body.style.background = `radial-gradient(ellipse at center, ${c1}18 0%, #0d0d2b 70%)`;
 
   cancelSpeech();
   const gen = speechGen;
