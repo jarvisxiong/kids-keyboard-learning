@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>小朋友的键盘乐园</title>
+  <!-- 儿童友好字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       Claymorphism 儿童友好主题
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* 颜色系统：学习蓝 + 游戏黄 + 活力粉 */
+    :root {
+      --color-primary: #2563EB;
+      --color-secondary: #F59E0B;
+      --color-accent: #EC4899;
+      --color-success: #22C55E;
+      --color-background: #EFF6FF;
+      --color-background-warm: #FFF7ED;
+      --color-background-pink: #FFF1F2;
+      --color-foreground: #0F172A;
+      --color-muted: #64748B;
+      --color-card: #FFFFFF;
+      --color-border: #E4ECFC;
+      --color-text-light: #334155;
+    }
+
+    body {
+      /* 明亮渐变背景 - 活泼友好 */
+      background: linear-gradient(135deg,
+        var(--color-background) 0%,
+        var(--color-background-warm) 50%,
+        var(--color-background-pink) 100%);
+      font-family: 'Comic Neue', 'PingFang SC', 'Microsoft YaHei', cursive, sans-serif;
+      overflow: hidden;
+      min-height: 100vh;
+      color: var(--color-foreground);
+      user-select: none;
+    }
+
+    #app-shell {
+      position: relative;
+      z-index: 1;
+      width: min(1180px, calc(100vw - 32px));
+      height: min(760px, calc(100vh - 32px));
+      margin: 16px auto;
+      display: grid;
+      grid-template-columns: 1fr 190px;
+      grid-template-rows: auto 1fr auto;
+      gap: 16px;
+      /* Claymorphism 白色卡片容器 */
+      background: var(--color-card);
+      border-radius: 32px;
+      padding: 20px;
+      box-shadow:
+        12px 12px 24px rgba(0, 0, 0, 0.08),
+        -12px -12px 24px rgba(255, 255, 255, 0.9),
+        0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    #top-bar {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 8px;
+    }
+
+    #top-bar h1 {
+      /* 儿童友好字体 Baloo 2 */
+      font-family: 'Baloo 2', cursive;
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--color-primary);
+      /* 软萌文字阴影 */
+      text-shadow: 2px 2px 0 var(--color-secondary);
+    }
+
+    #friendly-prompt {
+      margin-top: 6px;
+      color: var(--color-muted);
+      font-size: clamp(15px, 2vw, 20px);
+      font-weight: 400;
+    }
+
+    #reward-panel {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .reward-pill {
+      min-width: 96px;
+      /* Claymorphism 奖励胶囊 */
+      background: linear-gradient(145deg, #ffffff, #f8fafc);
+      border: 3px solid rgba(37, 99, 235, 0.2);
+      border-radius: 20px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-foreground);
+      /* 内外阴影 */
+      box-shadow:
+        6px 6px 12px rgba(0, 0, 0, 0.06),
+        -6px -6px 12px rgba(255, 255, 255, 0.7);
+    }
+
+    .reward-pill strong {
+      color: var(--color-secondary);
+      font-size: 20px;
+    }
+
+    #play-area {
+      position: relative;
+      overflow: hidden;
+      /* Claymorphism 主舞台 */
+      background: linear-gradient(145deg, #f0f9ff, #ffffff);
+      border: 4px solid rgba(37, 99, 235, 0.15);
+      border-radius: 28px;
+      box-shadow:
+        10px 10px 20px rgba(0, 0, 0, 0.06),
+        -10px -10px 20px rgba(255, 255, 255, 0.8),
+        inset 0 0 30px rgba(37, 99, 235, 0.03);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+      cursor: pointer;
+    }
+
+    #control-dock {
+      display: grid;
+      gap: 12px;
+      align-content: stretch;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       Claymorphism 按钮
+       ═══════════════════════════════════════════════════════════════ */
+
+    .play-btn, .soft-btn {
+      font-family: 'Baloo 2', cursive;
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.2s ease,
+                  background 0.2s ease;
+    }
+
+    .play-btn {
+      min-height: 88px;
+      /* 触摸目标 ≥44px */
+      min-width: 44px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-foreground);
+      /* Claymorphism 样式 */
+      background: linear-gradient(145deg, #ffffff, #f0f4ff);
+      border: 3px solid rgba(37, 99, 235, 0.2);
+      border-radius: 22px;
+      box-shadow:
+        8px 8px 16px rgba(0, 0, 0, 0.08),
+        -8px -8px 16px rgba(255, 255, 255, 0.8);
+    }
+
+    .play-btn .btn-icon {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .play-btn .btn-icon svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .play-btn:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow:
+        12px 12px 24px rgba(0, 0, 0, 0.1),
+        -12px -12px 24px rgba(255, 255, 255, 0.9);
+    }
+
+    .play-btn:active {
+      transform: scale(0.96);
+      box-shadow:
+        4px 4px 8px rgba(0, 0, 0, 0.12),
+        -4px -4px 8px rgba(255, 255, 255, 1);
+    }
+
+    .play-btn.active {
+      /* 活跃状态 - 黄色高亮 */
+      background: linear-gradient(145deg, #fffbeb, #fef3c7);
+      border-color: var(--color-secondary);
+      box-shadow:
+        8px 8px 16px rgba(245, 158, 11, 0.15),
+        -8px -8px 16px rgba(255, 255, 255, 0.9),
+        inset 0 0 20px rgba(245, 158, 11, 0.1);
+    }
+
+    .play-btn.active .btn-icon svg {
+      color: var(--color-secondary);
+    }
+
+    .soft-btn {
+      padding: 12px 20px;
+      font-size: clamp(16px, 2vw, 18px);
+      font-weight: 700;
+      color: var(--color-foreground);
+      background: linear-gradient(145deg, #ffffff, #f8fafc);
+      border: 3px solid rgba(236, 72, 153, 0.2);
+      border-radius: 18px;
+      box-shadow:
+        6px 6px 12px rgba(0, 0, 0, 0.06),
+        -6px -6px 12px rgba(255, 255, 255, 0.7);
+    }
+
+    .soft-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--color-accent);
+    }
+
+    #recent-panel {
+      grid-column: 1 / -1;
+      min-height: 62px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      overflow: hidden;
+      padding: 8px 0;
+    }
+
+    .recent-title {
+      color: var(--color-muted);
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    #recent-list {
+      display: flex;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .recent-chip {
+      border-radius: 16px;
+      padding: 8px 14px;
+      /* Claymorphism 小卡片 */
+      background: linear-gradient(145deg, #ffffff, #f0f9ff);
+      border: 2px solid rgba(37, 99, 235, 0.15);
+      white-space: nowrap;
+      font-weight: 700;
+      color: var(--color-text-light);
+      box-shadow:
+        4px 4px 8px rgba(0, 0, 0, 0.04),
+        -4px -4px 8px rgba(255, 255, 255, 0.6);
+    }
+
+    /* ── Hint ── */
+    #hint {
+      color: var(--color-muted);
+      font-size: 1.3rem;
+      font-family: 'Baloo 2', cursive;
+      letter-spacing: 0.02em;
+      text-align: center;
+      position: absolute;
+      padding: 24px;
+      line-height: 1.6;
+    }
+
+    #hint small {
+      color: var(--color-muted);
+      opacity: 0.7;
+    }
+
+    /* ── Free / result display ── */
+    #display {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-align: center;
+      animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-height: 100%;
+      padding: 20px;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+
+    #key-letter {
+      font-family: 'Baloo 2', cursive;
+      font-size: clamp(72px, 14vw, 150px);
+      font-weight: 800;
+      line-height: 1;
+      /* 软萌文字效果 */
+      text-shadow:
+        0 0 40px currentColor,
+        4px 4px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    #emoji-box {
+      font-size: clamp(48px, 8vw, 96px);
+      line-height: 1;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+    }
+
+    @keyframes speakPulse {
+      0%,100% { transform: scale(1); }
+      50%      { transform: scale(1.15); }
+    }
+    .speaking { animation: speakPulse 0.5s ease-in-out infinite; }
+
+    /* number: big digit + 汉字 side by side */
+    #num-row {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    #num-arabic {
+      font-family: 'Baloo 2', cursive;
+      font-size: clamp(80px, 15vw, 160px);
+      font-weight: 800;
+      line-height: 1;
+      text-shadow:
+        0 0 40px currentColor,
+        4px 4px 0 rgba(0, 0, 0, 0.1);
+    }
+    #num-chinese {
+      font-family: 'Baloo 2', cursive;
+      font-size: clamp(72px, 13vw, 144px);
+      font-weight: 800;
+      line-height: 1;
+      color: var(--color-foreground);
+      text-shadow:
+        0 0 30px currentColor,
+        4px 4px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    /* emoji counting row */
+    #count-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 85vw;
+      min-height: clamp(40px, 7vw, 80px);
+      font-size: clamp(32px, 6vw, 68px);
+    }
+    .count-item {
+      animation: dotPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: inline-block;
+    }
+    @keyframes dotPop {
+      from { transform: scale(0) rotate(-15deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    /* SVG digit stroke */
+    #svg-digit-wrap {
+      width: clamp(64px, 10vw, 108px);
+      height: clamp(88px, 14vw, 150px);
+    }
+    #svg-digit-wrap svg { width: 100%; height: 100%; }
+
+    #chinese-word {
+      font-family: 'Baloo 2', cursive;
+      font-size: clamp(32px, 5.8vw, 64px);
+      font-weight: 700;
+      color: var(--color-foreground);
+      text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.08);
+    }
+    #pinyin {
+      font-size: clamp(18px, 2.8vw, 32px);
+      color: var(--color-muted);
+      letter-spacing: 0.12em;
+      font-weight: 600;
+    }
+    #english-word {
+      font-size: clamp(14px, 2vw, 22px);
+      color: var(--color-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    /* ── Pinyin mode ── */
+    #pinyin-mode {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      text-align: center;
+    }
+    #pinyin-hint {
+      color: var(--color-muted);
+      font-size: 1.2rem;
+      font-family: 'Baloo 2', cursive;
+      line-height: 1.5;
+    }
+    #pinyin-buf-display {
+      font-family: 'Baloo 2', cursive;
+      font-size: clamp(44px, 9vw, 100px);
+      font-weight: 700;
+      color: var(--color-secondary);
+      letter-spacing: 0.1em;
+      min-height: 1.2em;
+      text-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
+    }
+    #pinyin-result {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    #pinyin-zi {
+      font-family: 'Baloo 2', cursive;
+      font-size: clamp(88px, 18vw, 200px);
+      font-weight: 800;
+      color: var(--color-foreground);
+      text-shadow:
+        0 0 50px currentColor,
+        4px 4px 0 rgba(0, 0, 0, 0.1);
+    }
+    #pinyin-emoji { font-size: clamp(54px, 10vw, 108px); }
+    #pinyin-py {
+      font-size: clamp(20px, 3.5vw, 40px);
+      color: var(--color-muted);
+      letter-spacing: 0.12em;
+      font-weight: 600;
+    }
+    #pinyin-tip {
+      font-size: clamp(14px, 2vw, 22px);
+      color: var(--color-muted);
+      opacity: 0.7;
+    }
+
+    /* ── Quiz mode ── */
+    #quiz-mode {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+    #quiz-prompt {
+      color: var(--color-muted);
+      font-size: clamp(18px, 3vw, 30px);
+      font-family: 'Baloo 2', cursive;
+    }
+    #quiz-emoji {
+      font-size: clamp(88px, 18vw, 200px);
+      line-height: 1;
+      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.1));
+    }
+    #quiz-word {
+      font-family: 'Baloo 2', cursive;
+      font-size: clamp(28px, 5vw, 56px);
+      font-weight: 700;
+      color: var(--color-foreground);
+      text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.08);
+    }
+    #quiz-feedback {
+      font-family: 'Baloo 2', cursive;
+      font-size: clamp(22px, 4vw, 44px);
+      min-height: 1.4em;
+      font-weight: 700;
+    }
+    @keyframes shake {
+      0%,100% { transform: translateX(0) rotate(0deg); }
+      20%      { transform: translateX(-10px) rotate(-3deg); }
+      40%      { transform: translateX(10px) rotate(3deg); }
+      60%      { transform: translateX(-6px) rotate(-2deg); }
+      80%      { transform: translateX(6px) rotate(2deg); }
+    }
+    .shake { animation: shake 0.5s ease; }
+
+    /* particles */
+    #particles {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── Mobile keyboard trigger ── */
+    #mobile-input {
+      position: fixed;
+      opacity: 0;
+      width: 1px; height: 1px;
+      top: 0; left: 0;
+      pointer-events: none;
+    }
+    #keyboard-btn {
+      position: fixed;
+      right: 20px;
+      bottom: 120px;
+      /* Claymorphism 键盘按钮 */
+      background: linear-gradient(145deg, #ffffff, #f0f9ff);
+      border: 3px solid rgba(37, 99, 235, 0.2);
+      border-radius: 20px;
+      width: 68px;
+      height: 60px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      box-shadow:
+        8px 8px 16px rgba(0, 0, 0, 0.08),
+        -8px -8px 16px rgba(255, 255, 255, 0.8);
+      transition: transform 0.2s ease;
+    }
+    #keyboard-btn:hover {
+      transform: scale(1.05);
+    }
+    #keyboard-btn svg {
+      width: 28px;
+      height: 28px;
+      color: var(--color-primary);
+    }
+
+    @media (max-width: 760px) {
+      body { overflow: hidden; }
+      #app-shell {
+        width: calc(100vw - 16px);
+        height: calc(100vh - 16px);
+        margin: 8px auto;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr auto auto;
+        padding: 16px;
+        border-radius: 24px;
+      }
+      #top-bar { align-items: flex-start; gap: 12px; }
+      #top-bar h1 { font-size: 28px; }
+      #friendly-prompt { font-size: 14px; }
+      #reward-panel { gap: 8px; }
+      .reward-pill {
+        min-width: 72px;
+        padding: 8px 12px;
+        font-size: 15px;
+        border-radius: 16px;
+      }
+      .reward-pill strong { font-size: 18px; }
+      #control-dock {
+        grid-row: 3;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .play-btn {
+        min-height: 64px;
+        min-width: 44px;
+        border-radius: 16px;
+        font-size: 13px;
+        gap: 4px;
+      }
+      .play-btn .btn-icon { width: 24px; height: 24px; }
+      .play-btn .btn-icon svg { width: 22px; height: 22px; }
+      #recent-panel {
+        grid-row: 4;
+        min-height: 48px;
+      }
+      .recent-chip { padding: 6px 10px; font-size: 14px; }
+      #keyboard-btn {
+        width: 56px;
+        height: 52px;
+        border-radius: 16px;
+        bottom: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<!-- Hidden input for mobile keyboard -->
+<input id="mobile-input" type="text" autocomplete="off" autocorrect="off"
+  autocapitalize="none" spellcheck="false" />
+
+<!-- Mobile keyboard trigger button -->
+<button id="keyboard-btn" title="唤起键盘" aria-label="打开键盘">
+  <!-- SVG 键盘图标 -->
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="4" width="20" height="16" rx="2"/>
+    <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M6 16h12"/>
+  </svg>
+</button>
+
+<main id="app-shell">
+  <header id="top-bar">
+    <div>
+      <h1>键盘游乐场</h1>
+      <p id="friendly-prompt">按一个键，发现一个小惊喜</p>
+    </div>
+    <div id="reward-panel" aria-live="polite">
+      <div class="reward-pill">
+        <!-- SVG 星星图标 -->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="2">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        <strong id="stars-count">0</strong>
+      </div>
+      <div class="reward-pill"><span>连击</span><strong id="streak-count">0</strong></div>
+    </div>
+  </header>
+
+  <section id="play-area" aria-live="polite">
+    <div id="hint">按键盘，或点这里随机发现<br><small>Press any key or tap for surprise</small></div>
+
+    <div id="display">
+      <div id="key-letter"></div>
+      <div id="emoji-box"></div>
+      <div id="num-row" style="display:none">
+        <div id="num-arabic"></div>
+        <div id="num-chinese"></div>
+        <div id="svg-digit-wrap"></div>
+      </div>
+      <div id="count-row"></div>
+      <div id="chinese-word"></div>
+      <div id="pinyin"></div>
+      <div id="english-word"></div>
+    </div>
+
+    <div id="pinyin-mode">
+      <div id="pinyin-hint">拼一拼<br><small>输入拼音，Backspace 删除</small></div>
+      <div id="pinyin-buf-display">_</div>
+      <div id="pinyin-result">
+        <div id="pinyin-zi"></div>
+        <div id="pinyin-emoji"></div>
+        <div id="pinyin-py"></div>
+        <div id="pinyin-tip">继续输入下一个字</div>
+      </div>
+    </div>
+
+    <div id="quiz-mode">
+      <div id="quiz-prompt">小挑战：按下正确的字母键</div>
+      <div id="quiz-emoji"></div>
+      <div id="quiz-word"></div>
+      <div id="quiz-feedback"></div>
+      <button id="skip-quiz-btn" class="soft-btn" type="button">换一个</button>
+    </div>
+  </section>
+
+  <aside id="control-dock" aria-label="游乐场控制台">
+    <!-- 字母按钮 -->
+    <button class="play-btn active" data-action="letters" type="button" aria-label="字母模式">
+      <span class="btn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 20h16M6 4h12M8 4v16M16 4v16"/>
+          <text x="10" y="14" font-size="8" font-weight="bold" fill="currentColor" stroke="none">A</text>
+        </svg>
+      </span>
+      <strong>字母</strong>
+    </button>
+    <!-- 数字按钮 -->
+    <button class="play-btn" data-action="numbers" type="button" aria-label="数字模式">
+      <span class="btn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="8"/>
+          <text x="9" y="15" font-size="10" font-weight="bold" fill="currentColor" stroke="none">5</text>
+        </svg>
+      </span>
+      <strong>数字</strong>
+    </button>
+    <!-- 拼音按钮 -->
+    <button class="play-btn" data-action="pinyin" type="button" aria-label="拼音模式">
+      <span class="btn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          <text x="8" y="12" font-size="6" font-weight="bold" fill="currentColor" stroke="none">拼</text>
+        </svg>
+      </span>
+      <strong>拼一拼</strong>
+    </button>
+    <!-- 挑战按钮 -->
+    <button class="play-btn" data-action="challenge" type="button" aria-label="挑战模式">
+      <span class="btn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+          <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+          <path d="M4 22h16"/>
+          <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+          <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+          <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+        </svg>
+      </span>
+      <strong>小挑战</strong>
+    </button>
+    <!-- 效果按钮 -->
+    <button class="play-btn" data-action="effect" type="button" aria-label="切换效果">
+      <span class="btn-icon" id="effect-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+        </svg>
+      </span>
+      <strong id="effect-label">爆炸</strong>
+    </button>
+  </aside>
+
+  <section id="recent-panel" aria-label="最近发现">
+    <span class="recent-title">最近发现</span>
+    <div id="recent-list"></div>
+  </section>
+</main>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════════
+const LETTERS = {
+  A:{emoji:"🍎",zh:"苹果",py:"píng guǒ",en:"Apple"},
+  B:{emoji:"🦋",zh:"蝴蝶",py:"hú dié",en:"Butterfly"},
+  C:{emoji:"🐱",zh:"猫咪",py:"māo mī",en:"Cat"},
+  D:{emoji:"🐶",zh:"小狗",py:"xiǎo gǒu",en:"Dog"},
+  E:{emoji:"🐘",zh:"大象",py:"dà xiàng",en:"Elephant"},
+  F:{emoji:"🐟",zh:"鱼儿",py:"yú ér",en:"Fish"},
+  G:{emoji:"🍇",zh:"葡萄",py:"pú táo",en:"Grape"},
+  H:{emoji:"🏠",zh:"房子",py:"fáng zi",en:"House"},
+  I:{emoji:"🍦",zh:"冰淇淋",py:"bīng qí lín",en:"Ice cream"},
+  J:{emoji:"🎋",zh:"竹子",py:"zhú zi",en:"Jungle"},
+  K:{emoji:"🪁",zh:"风筝",py:"fēng zheng",en:"Kite"},
+  L:{emoji:"🦁",zh:"狮子",py:"shī zi",en:"Lion"},
+  M:{emoji:"🐒",zh:"猴子",py:"hóu zi",en:"Monkey"},
+  N:{emoji:"🌙",zh:"月亮",py:"yuè liang",en:"Night moon"},
+  O:{emoji:"🐙",zh:"章鱼",py:"zhāng yú",en:"Octopus"},
+  P:{emoji:"🐼",zh:"熊猫",py:"xióng māo",en:"Panda"},
+  Q:{emoji:"👸",zh:"公主",py:"gōng zhǔ",en:"Queen"},
+  R:{emoji:"🐰",zh:"兔子",py:"tù zi",en:"Rabbit"},
+  S:{emoji:"⭐",zh:"星星",py:"xīng xīng",en:"Star"},
+  T:{emoji:"🐯",zh:"老虎",py:"lǎo hǔ",en:"Tiger"},
+  U:{emoji:"🦄",zh:"独角兽",py:"dú jiǎo shòu",en:"Unicorn"},
+  V:{emoji:"🎻",zh:"小提琴",py:"xiǎo tí qín",en:"Violin"},
+  W:{emoji:"🐋",zh:"鲸鱼",py:"jīng yú",en:"Whale"},
+  X:{emoji:"🎄",zh:"圣诞树",py:"shèng dàn shù",en:"X'mas"},
+  Y:{emoji:"🪀",zh:"溜溜球",py:"liū liū qiú",en:"Yo-yo"},
+  Z:{emoji:"🦓",zh:"斑马",py:"bān mǎ",en:"Zebra"},
+};
+
+const NUMBERS = {
+  "0":{zh:"零",py:"líng",en:"Zero",count:0,emoji:"⭕"},
+  "1":{zh:"一",py:"yī",en:"One",count:1,emoji:"🌟"},
+  "2":{zh:"二",py:"èr",en:"Two",count:2,emoji:"🍎"},
+  "3":{zh:"三",py:"sān",en:"Three",count:3,emoji:"🐱"},
+  "4":{zh:"四",py:"sì",en:"Four",count:4,emoji:"🌸"},
+  "5":{zh:"五",py:"wǔ",en:"Five",count:5,emoji:"🎈"},
+  "6":{zh:"六",py:"liù",en:"Six",count:6,emoji:"🌈"},
+  "7":{zh:"七",py:"qī",en:"Seven",count:7,emoji:"🐟"},
+  "8":{zh:"八",py:"bā",en:"Eight",count:8,emoji:"🦋"},
+  "9":{zh:"九",py:"jiǔ",en:"Nine",count:9,emoji:"🌙"},
+};
+
+const COUNT_ZH = ["零","一","二","三","四","五","六","七","八","九"];
+
+// SVG paths for digits 0-9 (simplified stroke paths, viewBox 0 0 60 80)
+const DIGIT_SVG = {
+  "0":"M30,5 C10,5 5,20 5,40 C5,60 10,75 30,75 C50,75 55,60 55,40 C55,20 50,5 30,5 Z",
+  "1":"M20,20 L30,5 L30,75",
+  "2":"M10,20 Q10,5 30,5 Q50,5 50,22 Q50,38 10,75 L50,75",
+  "3":"M12,5 L50,5 L30,38 Q55,42 55,60 Q55,78 30,78 Q10,78 8,62",
+  "4":"M40,75 L40,5 L5,52 L55,52",
+  "5":"M48,5 L12,5 L8,38 Q16,30 30,30 Q55,30 55,54 Q55,78 28,78 Q10,78 8,62",
+  "6":"M45,10 Q20,-5 8,40 Q2,65 25,75 Q50,85 55,58 Q60,35 30,32 Q10,30 8,55",
+  "7":"M8,5 L52,5 L22,75",
+  "8":"M30,5 Q55,5 55,22 Q55,40 30,40 Q55,40 55,58 Q55,78 30,78 Q5,78 5,58 Q5,40 30,40 Q5,40 5,22 Q5,5 30,5 Z",
+  "9":"M52,28 Q52,5 30,5 Q8,5 8,28 Q8,50 30,50 Q52,50 52,28 Q55,55 40,75",
+};
+
+// Pinyin → 汉字 dictionary
+const PINYIN_ZI = {
+  // 自然
+  tian:{zi:"天",emoji:"🌤️",py:"tiān"},
+  di:{zi:"地",emoji:"🌍",py:"dì"},
+  ri:{zi:"日",emoji:"☀️",py:"rì"},
+  yue:{zi:"月",emoji:"🌙",py:"yuè"},
+  shui:{zi:"水",emoji:"💧",py:"shuǐ"},
+  huo:{zi:"火",emoji:"🔥",py:"huǒ"},
+  shan:{zi:"山",emoji:"⛰️",py:"shān"},
+  feng:{zi:"风",emoji:"🌬️",py:"fēng"},
+  yu:{zi:"雨",emoji:"🌧️",py:"yǔ"},
+  xue:{zi:"雪",emoji:"❄️",py:"xuě"},
+  yun:{zi:"云",emoji:"☁️",py:"yún"},
+  // 植物
+  hua:{zi:"花",emoji:"🌸",py:"huā"},
+  cao:{zi:"草",emoji:"🌿",py:"cǎo"},
+  shu:{zi:"树",emoji:"🌳",py:"shù"},
+  mu:{zi:"木",emoji:"🪵",py:"mù"},
+  // 动物
+  niao:{zi:"鸟",emoji:"🐦",py:"niǎo"},
+  yu2:{zi:"鱼",emoji:"🐟",py:"yú"},
+  ma:{zi:"马",emoji:"🐴",py:"mǎ"},
+  gou:{zi:"狗",emoji:"🐶",py:"gǒu"},
+  mao:{zi:"猫",emoji:"🐱",py:"māo"},
+  niu:{zi:"牛",emoji:"🐄",py:"niú"},
+  yang:{zi:"羊",emoji:"🐑",py:"yáng"},
+  zhu:{zi:"猪",emoji:"🐷",py:"zhū"},
+  // 人体
+  ren:{zi:"人",emoji:"🧍",py:"rén"},
+  shou:{zi:"手",emoji:"✋",py:"shǒu"},
+  yan:{zi:"眼",emoji:"👁️",py:"yǎn"},
+  er:{zi:"耳",emoji:"👂",py:"ěr"},
+  bi:{zi:"鼻",emoji:"👃",py:"bí"},
+  zui:{zi:"嘴",emoji:"👄",py:"zuǐ"},
+  // 颜色
+  hong:{zi:"红",emoji:"🔴",py:"hóng"},
+  lv:{zi:"绿",emoji:"🟢",py:"lǜ"},
+  lan:{zi:"蓝",emoji:"🔵",py:"lán"},
+  bai:{zi:"白",emoji:"⚪",py:"bái"},
+  hei:{zi:"黑",emoji:"⚫",py:"hēi"},
+  huang:{zi:"黄",emoji:"🟡",py:"huáng"},
+  // 数字
+  yi:{zi:"一",emoji:"1️⃣",py:"yī"},
+  er2:{zi:"二",emoji:"2️⃣",py:"èr"},
+  san:{zi:"三",emoji:"3️⃣",py:"sān"},
+  si:{zi:"四",emoji:"4️⃣",py:"sì"},
+  wu:{zi:"五",emoji:"5️⃣",py:"wǔ"},
+  liu:{zi:"六",emoji:"6️⃣",py:"liù"},
+  qi:{zi:"七",emoji:"7️⃣",py:"qī"},
+  ba:{zi:"八",emoji:"8️⃣",py:"bā"},
+  jiu:{zi:"九",emoji:"9️⃣",py:"jiǔ"},
+  shi:{zi:"十",emoji:"🔟",py:"shí"},
+  // 家人
+  ba2:{zi:"爸",emoji:"👨",py:"bà"},
+  ma2:{zi:"妈",emoji:"👩",py:"mā"},
+  ge:{zi:"哥",emoji:"👦",py:"gē"},
+  jie:{zi:"姐",emoji:"👧",py:"jiě"},
+  // 常用
+  da:{zi:"大",emoji:"🔆",py:"dà"},
+  xiao:{zi:"小",emoji:"🔅",py:"xiǎo"},
+  hao:{zi:"好",emoji:"👍",py:"hǎo"},
+  ai:{zi:"爱",emoji:"❤️",py:"ài"},
+  chi:{zi:"吃",emoji:"🍽️",py:"chī"},
+  he:{zi:"喝",emoji:"🥤",py:"hē"},
+  // 食物
+  fan:{zi:"饭",emoji:"🍚",py:"fàn"},
+  tang:{zi:"糖",emoji:"🍬",py:"táng"},
+  bing:{zi:"冰",emoji:"🧊",py:"bīng"},
+};
+
+// Build lookup: raw pinyin string → entry
+const PINYIN_MAP = {};
+for (const [key, val] of Object.entries(PINYIN_ZI)) {
+  // key may have trailing digit to disambiguate; use the text as-is for lookup
+  const rawKey = key.replace(/\d+$/, "");
+  if (!PINYIN_MAP[rawKey]) PINYIN_MAP[rawKey] = val;
+}
+
+// All valid syllable prefixes (for early rejection)
+const VALID_PREFIXES = new Set();
+for (const syl of Object.keys(PINYIN_MAP)) {
+  for (let i = 1; i <= syl.length; i++) VALID_PREFIXES.add(syl.slice(0, i));
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PALETTES & PARTICLES
+// ═══════════════════════════════════════════════════════════════
+const PALETTES = [
+  ["#ff6b6b","#ffa07a"],["#ffd93d","#ff9100"],["#6bcb77","#00c49a"],
+  ["#4d96ff","#7b2fff"],["#ff6fcf","#c44dff"],["#00e5ff","#0070ff"],
+];
+let paletteIdx = 0;
+function nextPalette() { return PALETTES[paletteIdx++ % PALETTES.length]; }
+
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+let W, H, particles = [];
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+window.addEventListener("resize", resize); resize();
+
+function burst(c1, c2, n = 60) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random()*Math.PI*2, s = 3+Math.random()*9;
+    particles.push({
+      x:W/2,y:H/2, vx:Math.cos(a)*s, vy:Math.sin(a)*s-4,
+      r:5+Math.random()*12, color:Math.random()>.5?c1:c2,
+      alpha:1, decay:.012+Math.random()*.015, star:Math.random()>.5
+    });
+  }
+}
+function drawStar(cx,cy,r,color,alpha){
+  ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle=color;ctx.beginPath();
+  for(let i=0;i<5;i++){
+    const a=(i*4*Math.PI)/5-Math.PI/2, b=a+(2*Math.PI)/5;
+    ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
+    ctx.lineTo(cx+r*.4*Math.cos(b),cy+r*.4*Math.sin(b));
+  }
+  ctx.closePath();ctx.fill();ctx.restore();
+}
+// ── NOTE PARTICLES (mode 1) ──────────────────────────────────────
+const NOTE_GLYPHS=["♩","♪","♫","♬","🎵","🎶"];
+const NOTE_COLORS=["#ff6b6b","#ffd93d","#6bcb77","#4d96ff","#ff6fcf","#00e5ff","#ffa07a","#c44dff"];
+let noteParticles=[];
+function burstNotes(c1,c2,n=18){
+  for(let i=0;i<n;i++){
+    noteParticles.push({
+      x:W/2+(Math.random()-.5)*80, y:H/2+(Math.random()-.5)*40,
+      vy:-(1.2+Math.random()*2.0), vx:(Math.random()-.5)*.6,
+      phase:Math.random()*Math.PI*2, amp:18+Math.random()*28,
+      freq:.028+Math.random()*.018, t:0,
+      glyph:NOTE_GLYPHS[Math.floor(Math.random()*NOTE_GLYPHS.length)],
+      color:NOTE_COLORS[Math.floor(Math.random()*NOTE_COLORS.length)],
+      size:18+Math.random()*26, alpha:1, decay:.008+Math.random()*.010,
+    });
+  }
+}
+
+// ── BOW-STROKE ARC PARTICLES (mode 2) ────────────────────────────
+const BOW_COLORS=["#ffb347","#ffd700","#ff8c00","#ffe066","#ffa500","#e8c44d"];
+let bowParticles=[];
+function burstBow(c1,c2){
+  const n=7+Math.floor(Math.random()*5);
+  for(let i=0;i<n;i++){
+    const baseAngle=(i/n)*Math.PI*2;
+    bowParticles.push({
+      cx:W/2, cy:H/2, angle:baseAngle,
+      radius:60+Math.random()*90,
+      sweep:(Math.random()>.5?1:-1)*(0.5+Math.random()*0.8),
+      width:1.5+Math.random()*2.5,
+      color:BOW_COLORS[Math.floor(Math.random()*BOW_COLORS.length)],
+      alpha:0.85+Math.random()*.15, decay:.004+Math.random()*.005,
+    });
+  }
+}
+
+(function loop(){
+  ctx.clearRect(0,0,W,H);
+  particles=particles.filter(p=>p.alpha>.02);
+  for(const p of particles){
+    p.x+=p.vx;p.y+=p.vy;p.vy+=.25;p.alpha-=p.decay;
+    if(p.star)drawStar(p.x,p.y,p.r,p.color,p.alpha);
+    else{ctx.save();ctx.globalAlpha=p.alpha;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.restore();}
+  }
+  // Note particles (mode 1)
+  noteParticles=noteParticles.filter(p=>p.alpha>.02);
+  for(const p of noteParticles){
+    p.t++;
+    p.x+=p.vx+Math.sin(p.phase+p.t*p.freq)*p.amp*.06;
+    p.y+=p.vy; p.alpha-=p.decay;
+    ctx.save();ctx.globalAlpha=p.alpha;ctx.fillStyle=p.color;
+    ctx.font=`bold ${p.size|0}px serif`;ctx.textAlign="center";ctx.textBaseline="middle";
+    ctx.fillText(p.glyph,p.x,p.y);ctx.restore();
+  }
+  // Bow-stroke arc particles (mode 2)
+  bowParticles=bowParticles.filter(p=>p.alpha>.02);
+  for(const p of bowParticles){
+    p.alpha-=p.decay;
+    ctx.save();ctx.globalAlpha=p.alpha;ctx.strokeStyle=p.color;ctx.lineWidth=p.width;
+    ctx.lineCap="round";ctx.beginPath();
+    ctx.arc(p.cx,p.cy,p.radius,p.angle,p.angle+p.sweep);
+    ctx.stroke();ctx.restore();
+    p.radius+=1.4; p.width*=.992;
+  }
+  requestAnimationFrame(loop);
+})();
+
+// ═══════════════════════════════════════════════════════════════
+// AUDIO
+// ═══════════════════════════════════════════════════════════════
+let audioCtx;
+function ensureAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();}
+function playTone(freq=523,dur=.18,type="sine"){
+  try{
+    ensureAudio();
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.connect(g);g.connect(audioCtx.destination);
+    o.type=type;o.frequency.value=freq;
+    g.gain.setValueAtTime(.28,audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);
+    o.start();o.stop(audioCtx.currentTime+dur);
+  }catch(e){}
+}
+const NOTE_FREQS=[261,294,330,349,392,440,494,523,587,659,698,784,880,988,1047,1175,1319,1397,1568,1760,1976,2093,2349,2637,2794,3136];
+function cheerTones(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,.2,"triangle"),i*120));}
+function failTone(){playTone(220,.3,"sawtooth");}
+
+// ── Effect-mode audio ─────────────────────────────────────────────
+function playArpeggio(baseFreq){
+  const ratios=[1,Math.pow(2,4/12),Math.pow(2,7/12),2];
+  ratios.forEach((r,i)=>setTimeout(()=>playTone(baseFreq*r,.15,"sine"),i*80));
+}
+function playViolin(freq,dur=.55){
+  try{
+    ensureAudio();
+    const t=audioCtx.currentTime;
+    const o=audioCtx.createOscillator(),lfo=audioCtx.createOscillator();
+    const lfoGain=audioCtx.createGain(),filt=audioCtx.createBiquadFilter(),g=audioCtx.createGain();
+    o.type="sawtooth";o.frequency.value=freq;
+    lfo.type="sine";lfo.frequency.value=5.5;
+    lfoGain.gain.value=freq*0.012;
+    filt.type="lowpass";filt.frequency.value=freq*4.5;filt.Q.value=1.2;
+    g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(.22,t+.08);
+    g.gain.setValueAtTime(.22,t+dur-.12);
+    g.gain.exponentialRampToValueAtTime(.001,t+dur);
+    lfo.connect(lfoGain);lfoGain.connect(o.frequency);
+    o.connect(filt);filt.connect(g);g.connect(audioCtx.destination);
+    o.start(t);o.stop(t+dur);lfo.start(t);lfo.stop(t+dur);
+  }catch(e){}
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SPEECH
+// ═══════════════════════════════════════════════════════════════
+let ttsVoices=[];
+function loadVoices(){ttsVoices=window.speechSynthesis.getVoices();}
+loadVoices();
+if(typeof speechSynthesis!=="undefined"&&speechSynthesis.onvoiceschanged!==undefined)
+  speechSynthesis.onvoiceschanged=loadVoices;
+
+function getBestVoice(lang){
+  return ttsVoices.find(v=>v.lang===lang)||ttsVoices.find(v=>v.lang.startsWith(lang.split("-")[0]))||null;
+}
+let speechGen=0;
+function cancelSpeech(){speechGen++;if(typeof speechSynthesis!=="undefined")speechSynthesis.cancel();}
+function sayOne(text,lang="zh-CN",rate=.88,pitch=1.1){
+  return new Promise(res=>{
+    if(typeof speechSynthesis==="undefined"){res();return;}
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang=lang;u.rate=rate;u.pitch=pitch;
+    const v=getBestVoice(lang);if(v)u.voice=v;
+    u.onend=res;u.onerror=res;speechSynthesis.speak(u);
+  });
+}
+function pause(ms){return new Promise(r=>setTimeout(r,ms));}
+
+async function speakLetter(upper,data,gen){
+  emojiBox.classList.add("speaking");
+  await sayOne(upper,"en-US",.8,1.15);
+  if(speechGen!==gen){emojiBox.classList.remove("speaking");return;}
+  emojiBox.classList.remove("speaking");
+}
+
+async function speakNumber(n,countEmoji,gen){
+  countRow.innerHTML="";
+  emojiBox.classList.add("speaking");
+  if(n===0){await sayOne("零","zh-CN",.8,1.1);emojiBox.classList.remove("speaking");return;}
+  await sayOne(COUNT_ZH[n],"zh-CN",.8,1.1);
+  emojiBox.classList.remove("speaking");
+  if(speechGen!==gen)return;
+  await pause(260);
+  for(let i=1;i<=n;i++){
+    if(speechGen!==gen)return;
+    const el=document.createElement("span");
+    el.className="count-item";el.textContent=countEmoji;
+    countRow.appendChild(el);
+    playTone(600+i*40,.12,"sine");
+    burst(PALETTES[i%PALETTES.length][0],"#fff",10);
+    await sayOne(COUNT_ZH[i],"zh-CN",.82,1.2);
+    if(speechGen!==gen)return;
+    if(i<n)await pause(100);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SVG DIGIT ANIMATION
+// ═══════════════════════════════════════════════════════════════
+function showDigitSVG(digit, color) {
+  const wrap = document.getElementById("svg-digit-wrap");
+  const d = DIGIT_SVG[digit];
+  if (!d) { wrap.innerHTML = ""; return; }
+  wrap.innerHTML = `
+    <svg viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="${d}" stroke="${color}" stroke-width="7"
+        stroke-linecap="round" stroke-linejoin="round"
+        fill="none"
+        stroke-dasharray="400" stroke-dashoffset="400">
+        <animate attributeName="stroke-dashoffset"
+          from="400" to="0" dur="1.4s" begin="0.3s"
+          fill="freeze" calcMode="spline"
+          keyTimes="0;1" keySplines="0.4 0 0.2 1"/>
+      </path>
+    </svg>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DOM REFS
+// ═══════════════════════════════════════════════════════════════
+const hint       = document.getElementById("hint");
+const displayEl  = document.getElementById("display");
+const keyLetter  = document.getElementById("key-letter");
+const emojiBox   = document.getElementById("emoji-box");
+const numRow     = document.getElementById("num-row");
+const numArabic  = document.getElementById("num-arabic");
+const numChinese = document.getElementById("num-chinese");
+const countRow   = document.getElementById("count-row");
+const chineseEl  = document.getElementById("chinese-word");
+const pinyinEl   = document.getElementById("pinyin");
+const englishEl  = document.getElementById("english-word");
+const starsCountEl  = document.getElementById("stars-count");
+const streakCountEl = document.getElementById("streak-count");
+const recentListEl  = document.getElementById("recent-list");
+const effectLabelEl = document.getElementById("effect-label");
+
+let stars = 0;
+let streak = 0;
+const recentDiscoveries = [];
+
+function renderRewards() {
+  starsCountEl.textContent = stars;
+  streakCountEl.textContent = streak;
+}
+
+function addReward(amount = 1) {
+  stars += amount;
+  streak += 1;
+  renderRewards();
+}
+
+function addDiscovery(label, emoji) {
+  recentDiscoveries.unshift({ label, emoji });
+  recentDiscoveries.splice(8);
+  recentListEl.innerHTML = "";
+  for (const item of recentDiscoveries) {
+    const chip = document.createElement("span");
+    chip.className = "recent-chip";
+    chip.textContent = `${item.emoji} ${item.label}`;
+    recentListEl.appendChild(chip);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MODE SYSTEM
+// ═══════════════════════════════════════════════════════════════
+let currentMode = "free";
+
+function setMode(m) {
+  currentMode = m;
+  cancelSpeech();
+  hint.style.display       = "none";
+  displayEl.style.display  = "none";
+  document.getElementById("pinyin-mode").style.display = "none";
+  document.getElementById("quiz-mode").style.display   = "none";
+
+  updateActivityButtons(m === "quiz" ? "challenge" : m === "pinyin" ? "pinyin" : "free");
+
+  // 浅色活泼背景
+  document.body.style.background = "linear-gradient(135deg, #EFF6FF 0%, #FFF7ED 50%, #FFF1F2 100%)";
+
+  if (m === "free") {
+    hint.style.display = "block";
+  } else if (m === "pinyin") {
+    document.getElementById("pinyin-mode").style.display = "flex";
+    resetPinyin();
+  } else if (m === "quiz") {
+    document.getElementById("quiz-mode").style.display = "flex";
+    nextQuiz();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EFFECT MODE SYSTEM
+// ═══════════════════════════════════════════════════════════════
+let effectMode = 0;
+const EFFECTS = [
+  {
+    label: "爆炸",
+    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+    </svg>`
+  },
+  {
+    label: "音符",
+    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 18V5l12-2v13"/>
+      <circle cx="6" cy="18" r="3"/>
+      <circle cx="18" cy="16" r="3"/>
+    </svg>`
+  },
+  {
+    label: "小提琴",
+    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3v18"/>
+      <path d="M8 6l8 0"/>
+      <path d="M8 12l8 0"/>
+      <ellipse cx="12" cy="18" rx="4" ry="3"/>
+      <path d="M10 21c0 1 1 2 2 2s2-1 2-2"/>
+    </svg>`
+  },
+];
+
+function updateActivityButtons(activeAction) {
+  document.querySelectorAll(".play-btn").forEach(btn => {
+    const action = btn.dataset.action;
+    btn.classList.toggle("active", action === activeAction || (activeAction === "free" && action === "letters"));
+  });
+}
+
+function updateEffectButton() {
+  const fx = EFFECTS[effectMode];
+  const iconEl = document.getElementById("effect-icon");
+  iconEl.innerHTML = fx.svg;
+  document.getElementById("effect-label").textContent = fx.label;
+}
+
+function setEffectMode(n){
+  effectMode = n;
+  updateEffectButton();
+}
+
+document.querySelectorAll(".play-btn").forEach(btn => {
+  btn.addEventListener("click", e => {
+    e.stopPropagation();
+    const action = btn.dataset.action;
+    if (action === "letters") {
+      setMode("free");
+      showRandomLetter();
+    } else if (action === "numbers") {
+      setMode("free");
+      showRandomNumber();
+    } else if (action === "pinyin") {
+      setMode("pinyin");
+    } else if (action === "challenge") {
+      setMode("quiz");
+    } else if (action === "effect") {
+      setEffectMode((effectMode + 1) % EFFECTS.length);
+    }
+  });
+});
+
+function triggerEffect(c1,c2,baseFreq,toneType="triangle",toneDur=.3){
+  if(effectMode===0){ burst(c1,c2,70); playTone(baseFreq,toneDur,toneType); }
+  else if(effectMode===1){ burstNotes(c1,c2,18); playArpeggio(baseFreq); }
+  else if(effectMode===2){ burstBow(c1,c2); playViolin(baseFreq); }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FREE MODE
+// ═══════════════════════════════════════════════════════════════
+function showRandomLetter() {
+  const keys = Object.keys(LETTERS);
+  showKey(keys[Math.floor(Math.random() * keys.length)]);
+}
+
+function showRandomNumber() {
+  const keys = Object.keys(NUMBERS);
+  showKey(keys[Math.floor(Math.random() * keys.length)]);
+}
+
+function showSurprise() {
+  if (Math.random() < 0.7) showRandomLetter();
+  else showRandomNumber();
+}
+
+function showKey(raw) {
+  const upper = raw.toUpperCase();
+  const isLetter = /^[A-Z]$/.test(upper);
+  const isDigit  = /^[0-9]$/.test(upper);
+  if (!isLetter && !isDigit) return;
+
+  cancelSpeech();
+  const gen = speechGen;
+  const [c1, c2] = nextPalette();
+
+  hint.style.display = "none";
+  displayEl.style.display = "flex";
+  displayEl.style.animation = "none";
+  void displayEl.offsetWidth;
+  displayEl.style.animation = "popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)";
+
+  // 浅色渐变背景配合当前颜色
+  document.body.style.background = `linear-gradient(135deg, ${c1}15 0%, ${c2}15 50%, #FFF1F2 100%)`;
+
+  if (isLetter) {
+    const data = LETTERS[upper];
+    keyLetter.textContent   = upper;
+    keyLetter.style.color   = c1;
+    keyLetter.style.display = "block";
+    emojiBox.textContent    = data.emoji;
+    emojiBox.classList.remove("speaking");
+    numRow.style.display    = "none";
+    countRow.innerHTML      = "";
+    document.getElementById("svg-digit-wrap").innerHTML = "";
+    chineseEl.textContent   = data.zh;
+    chineseEl.style.textShadow = `2px 2px 0 rgba(0,0,0,0.1)`;
+    pinyinEl.textContent    = data.py;
+    englishEl.textContent   = data.en;
+    chineseEl.style.display = "";
+    pinyinEl.style.display  = "";
+    englishEl.style.display = "";
+
+    triggerEffect(c1,c2,NOTE_FREQS[(upper.charCodeAt(0)-65)%NOTE_FREQS.length]);
+    addReward(1);
+    addDiscovery(`${upper} ${data.zh}`, data.emoji);
+    speakLetter(upper, data, gen);
+
+  } else {
+    const data = NUMBERS[upper];
+    const n    = data.count;
+    keyLetter.style.display = "none";
+    emojiBox.textContent    = ""; // no separate emoji for numbers
+    emojiBox.classList.remove("speaking");
+
+    numRow.style.display    = "flex";
+    numArabic.textContent   = upper;
+    numArabic.style.color   = c1;
+    numChinese.textContent  = data.zh;
+    numChinese.style.color  = c2;
+    numChinese.style.textShadow = `2px 2px 0 rgba(0,0,0,0.1)`;
+    showDigitSVG(upper, c1);
+
+    countRow.innerHTML      = "";
+    chineseEl.style.display = "none";
+    pinyinEl.style.display  = "none";
+    englishEl.style.display = "none";
+
+    if(effectMode===0){for(let i=0;i<=Math.min(n,4);i++)setTimeout(()=>playTone(300+n*40+i*60,.14),i*90);burst(c1,c2,70);}
+    else if(effectMode===1){burstNotes(c1,c2,18);playArpeggio(300+n*40);}
+    else if(effectMode===2){burstBow(c1,c2);playViolin(300+n*40);}
+
+    addReward(1);
+    addDiscovery(`${upper} ${data.zh}`, data.emoji);
+    speakNumber(n, data.emoji, gen);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PINYIN MODE
+// ═══════════════════════════════════════════════════════════════
+let pinyinBuf = "";
+const pinyinBufEl    = document.getElementById("pinyin-buf-display");
+const pinyinResultEl = document.getElementById("pinyin-result");
+const pinyinZiEl     = document.getElementById("pinyin-zi");
+const pinyinEmojiEl  = document.getElementById("pinyin-emoji");
+const pinyinPyEl     = document.getElementById("pinyin-py");
+
+function resetPinyin() {
+  pinyinBuf = "";
+  pinyinBufEl.textContent = "_";
+  pinyinResultEl.style.display = "none";
+  // 浅色活泼背景
+  document.body.style.background = "linear-gradient(135deg, #EFF6FF 0%, #FFF7ED 50%, #FFF1F2 100%)";
+}
+
+async function handlePinyinKey(key) {
+  if (key === "Backspace") {
+    pinyinBuf = pinyinBuf.slice(0, -1);
+    pinyinBufEl.textContent = pinyinBuf || "_";
+    return;
+  }
+  if (!/^[a-z]$/i.test(key)) return;
+
+  const letter = key.toLowerCase();
+  const next   = pinyinBuf + letter;
+
+  // Check if next has any valid prefix
+  if (!VALID_PREFIXES.has(next)) {
+    // Try starting fresh with this letter
+    pinyinBuf = VALID_PREFIXES.has(letter) ? letter : "";
+    pinyinBufEl.textContent = pinyinBuf || "_";
+    return;
+  }
+
+  pinyinBuf = next;
+  pinyinBufEl.textContent = pinyinBuf;
+
+  // Exact match?
+  const match = PINYIN_MAP[pinyinBuf];
+  if (match) {
+    const [c1, c2] = nextPalette();
+    // 浅色渐变背景配合当前颜色
+    document.body.style.background = `linear-gradient(135deg, ${c1}15 0%, ${c2}15 50%, #FFF1F2 100%)`;
+    triggerEffect(c1,c2,523);
+    addReward(2);
+    addDiscovery(`${match.zi} ${match.py}`, match.emoji);
+
+    pinyinZiEl.textContent   = match.zi;
+    pinyinZiEl.style.color   = c1;
+    pinyinZiEl.style.textShadow = `2px 2px 0 rgba(0,0,0,0.1)`;
+    pinyinEmojiEl.textContent = match.emoji;
+    pinyinPyEl.textContent   = match.py;
+    pinyinResultEl.style.display = "flex";
+    pinyinResultEl.style.animation = "none";
+    void pinyinResultEl.offsetWidth;
+    pinyinResultEl.style.animation = "popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)";
+    cancelSpeech();
+    const gen = speechGen;
+    await sayOne(match.zi, "zh-CN", .82, 1.1);
+
+    // Reset buf, keep result visible
+    pinyinBuf = "";
+    pinyinBufEl.textContent = "_";
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// QUIZ MODE
+// ═══════════════════════════════════════════════════════════════
+const quizEmojiEl    = document.getElementById("quiz-emoji");
+const quizWordEl     = document.getElementById("quiz-word");
+const quizFeedbackEl = document.getElementById("quiz-feedback");
+let quizAnswer       = "";
+let quizLocked       = false;
+
+document.getElementById("skip-quiz-btn").addEventListener("click", e => {
+  e.stopPropagation();
+  nextQuiz();
+});
+
+function nextQuiz() {
+  quizLocked = false;
+  quizFeedbackEl.textContent = "";
+  const keys  = Object.keys(LETTERS);
+  const key   = keys[Math.floor(Math.random() * keys.length)];
+  const data  = LETTERS[key];
+  quizAnswer  = key;
+  const [c1]  = nextPalette();
+
+  quizEmojiEl.textContent = data.emoji;
+  quizWordEl.textContent  = data.zh;
+  quizWordEl.style.color  = c1;
+
+  // 浅色渐变背景
+  document.body.style.background = `linear-gradient(135deg, ${c1}15 0%, #FFF7ED 50%, #FFF1F2 100%)`;
+
+  cancelSpeech();
+  const gen = speechGen;
+  (async () => {
+    await pause(300);
+    if (speechGen !== gen) return;
+    await sayOne(data.zh, "zh-CN", .82, 1.1);
+  })();
+}
+
+async function handleQuizKey(key) {
+  if (quizLocked) return;
+  const upper = key.toUpperCase();
+  if (!/^[A-Z]$/.test(upper)) return;
+
+  if (upper === quizAnswer) {
+    quizLocked = true;
+    quizFeedbackEl.textContent = "🎉 太棒了！";
+    quizFeedbackEl.style.color = "#6bcb77";
+    if(effectMode===0){burst("#6bcb77","#ffd93d",100);cheerTones();}
+    else if(effectMode===1){burstNotes("#6bcb77","#ffd93d",30);playArpeggio(523);}
+    else if(effectMode===2){burstBow("#ffd700","#ff8c00");playViolin(523,.8);}
+    addReward(3);
+    addDiscovery(`${quizAnswer} ${LETTERS[quizAnswer].zh}`, LETTERS[quizAnswer].emoji);
+    cancelSpeech();
+    await sayOne("太棒了！真厉害！","zh-CN",.85,1.2);
+    await pause(1200);
+    if (currentMode === "quiz") nextQuiz();
+  } else {
+    quizFeedbackEl.textContent = "再试试！";
+    quizFeedbackEl.style.color = "#ff6b6b";
+    quizEmojiEl.classList.add("shake");
+    quizEmojiEl.addEventListener("animationend", () => quizEmojiEl.classList.remove("shake"), {once:true});
+    failTone();
+    cancelSpeech();
+    await sayOne("再试试！","zh-CN",.82,1.1);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INPUT ROUTER
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener("keydown", e => {
+  if (e.repeat) return;
+  if (e.key === "Tab") { e.preventDefault(); const modes=["free","pinyin","quiz"]; setMode(modes[(modes.indexOf(currentMode)+1)%3]); return; }
+  if (e.key === "`") { setEffectMode((effectMode+1)%3); return; }
+  if (e.key === "F11") return;
+
+  if (currentMode === "free")   showKey(e.key);
+  else if (currentMode === "pinyin") handlePinyinKey(e.key);
+  else if (currentMode === "quiz")   handleQuizKey(e.key);
+});
+
+// Touch: the stage acts as a friendly surprise area.
+document.getElementById("play-area").addEventListener("click", e => {
+  if (e.target.closest("button")) return;
+  if (currentMode === "free") showSurprise();
+  else if (currentMode === "quiz") nextQuiz();
+});
+
+// Mobile keyboard support
+const mobileInput = document.getElementById("mobile-input");
+const keyboardBtn = document.getElementById("keyboard-btn");
+
+const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+if (isMobile) keyboardBtn.style.display = "flex";
+
+keyboardBtn.addEventListener("click", () => {
+  mobileInput.style.pointerEvents = "auto";
+  mobileInput.focus();
+  mobileInput.style.pointerEvents = "none";
+});
+
+let lastVal = "";
+mobileInput.addEventListener("input", () => {
+  const val = mobileInput.value;
+  const added = val.slice(lastVal.length);
+  lastVal = val;
+  for (const ch of added) {
+    if (currentMode === "free")        showKey(ch);
+    else if (currentMode === "pinyin") handlePinyinKey(ch);
+    else if (currentMode === "quiz")   handleQuizKey(ch);
+  }
+  if (mobileInput.value.length > 20) { mobileInput.value = ""; lastVal = ""; }
+});
+
+mobileInput.addEventListener("keydown", e => {
+  if (e.key === "Backspace" && currentMode === "pinyin") handlePinyinKey("Backspace");
+});
+
+// Init
+renderRewards();
+updateEffectButton();
+setMode("free");
+</script>
+</body>
+</html>
